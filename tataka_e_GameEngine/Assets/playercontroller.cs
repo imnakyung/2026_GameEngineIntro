@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class playercontroller : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class playercontroller : MonoBehaviour
     private Rigidbody2D rb;
     private Animator myAnimator;
 
-     void Start()
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
@@ -17,7 +18,7 @@ public class playercontroller : MonoBehaviour
     }
 
     public void OnMove(InputValue value)
-   
+
     {
         moveInput = value.Get<Vector2>();
     }
@@ -34,19 +35,31 @@ public class playercontroller : MonoBehaviour
 
             transform.localScale = new Vector3(1, 1, 1);
 
-        else if(moveInput.x < 0)
+        else if (moveInput.x < 0)
 
-                transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-1, 1, 1);
 
-        if(moveInput.magnitude > 0)
+        if (moveInput.magnitude > 0)
             myAnimator.SetBool("move", true);
 
         else
             myAnimator.SetBool("move", false);
 
         transform.Translate(Vector3.right * moveSpeed * moveInput.x * Time.deltaTime);
+    }
 
-
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.name == "Death")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        else
+        {
+            SceneManager.LoadScene("PlayScene_" + collision.name);
+        }
     }
 
 }
+
+
